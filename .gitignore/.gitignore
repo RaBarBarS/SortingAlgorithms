@@ -1,0 +1,203 @@
+// SortingAlgorithms.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <Windows.h>
+#include <conio.h>
+#include <cstdlib>
+#include <time.h>
+
+clock_t start, stop;
+double czas;
+
+using namespace std;
+
+//minimum/maximum
+int m(int x, int y)
+{
+	if (x > y)
+	{
+		return y;
+	}
+	else
+	{
+		return x;
+	}
+}
+
+//INSERTION SORT
+void insertion(int arr[], int a) {
+	int i, j, temp;
+
+	for (i = 0; i < a; i++) {
+		j = i;
+
+		while (j > 0 && arr[j] < arr[j - 1]) {
+			temp = arr[j];
+			arr[j] = arr[j - 1];
+			arr[j - 1] = temp;
+			j--;
+		}
+	}
+}
+
+//BUBBLE SORT
+void bubble(int t[], int a) {
+	int i, j, tmp;
+	bool check = false;
+	for (i = 0; i < a; i++) {
+
+		for (j = 0; j < a - 1; j++) {
+			if (t[j] > t[j + 1]) {
+				tmp = t[j];
+				t[j] = t[j + 1];
+				t[j + 1] = tmp;
+				check = 1;
+			}
+		}
+		if (check == false)
+			break;
+	}
+}
+
+//SELECTION SORT
+void selection(int t[], int a) {
+	int min, i, j, tmp;
+	for (i = 0; i < a; i++) {
+		min = t[i];
+		for (j = i + 1; j < a; j++) {
+			if (t[j] < min) {
+				tmp = min;
+				min = t[j];
+				t[j] = tmp;
+			}
+		}
+		t[i] = min;
+	}
+}
+
+//MERGE SORT
+void sort(int *t, int left, int right, int *pom)	// do merge
+{
+
+	if (right == left + 1)   //gdy jeden elem
+	{
+		return;
+	}
+	else
+	{
+		int i = 0;
+		int dl = right - left;
+		int s = dl / 2;
+		int l = left, r = left + s;
+
+		sort(t, left, left + s, pom);
+		sort(t, left + s, right, pom);
+
+		for (i = 0; i < dl; i++)
+		{
+			if (l < left + s && (r == right || m(t[l], t[r]) == t[l]))	// m-min/max
+			{
+				pom[i] = t[l];
+				l++;
+			}
+			else
+			{
+				pom[i] = t[r];
+				r++;
+			}
+		}
+		for (i = left; i < right; i++)
+		{
+			t[i] = pom[i - left];
+		}
+	}
+}
+
+int mergesort(int *t, int a)	//a ilosc elem
+{
+	int *pom = (int *)malloc(a * sizeof(int));
+	if (pom != NULL)
+	{
+		sort(t, 0, a, pom);
+		free(pom);
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+//HOW TO USE THEM 
+int main()
+{
+	srand(time(NULL));
+	int ile;
+	cout << "Ile losowych liczb w tablicy: ";
+	cin >> ile;
+	int i;
+	int *tab, *tab2;
+	tab = new int[ile]; tab2 = new int[ile];
+	for (i = 0; i<ile; i++)
+	{
+		tab[i] = rand() % 1000 + 1;
+	}
+	//odczyt(tab, ile);
+	for (i = 0; i < ile; i++) {
+		tab2[i] = tab[i];
+	}
+	
+	cout << endl;
+	start = clock();
+	insertion(tab, ile);
+	stop = clock();
+	czas = (double)(stop - start) / CLOCKS_PER_SEC;
+	cout << "czas insertion sort: " << czas << "s" << endl;
+
+	for (int i = 0; i < ile; i++) {
+		tab2[i] = tab[i];
+	}
+
+	cout << endl;
+	start = clock();
+	bullbe(tab, ile);
+	stop = clock();
+	czas = (double)(stop - start) / CLOCKS_PER_SEC;
+	cout << "czas bubble sort: " << czas << "s" << endl;
+
+	for (int i = 0; i < ile; i++) {
+		tab2[i] = tab[i];
+	}
+
+	cout << endl;
+	start = clock();
+	selection(tab, ile);
+	stop = clock();
+	czas = (double)(stop - start) / CLOCKS_PER_SEC;
+	cout << "czas selection sort: " << czas << "s" << endl;
+
+	for (int i = 0; i < ile; i++) {
+		tab2[i] = tab[i];
+	}
+
+	cout << endl;
+	start = clock();
+	mergesort(tab, ile);
+	stop = clock();
+	czas = (double)(stop - start) / CLOCKS_PER_SEC;
+	cout << "czas merge sort: " << czas << "s" << endl;
+	
+	/*zapis(tab, ile);
+	for (int i = 0; i < ile; i++) {
+		delete &tab[i];
+	}*/
+	
+
+	system("Pause");
+	return 0;
+}
+
